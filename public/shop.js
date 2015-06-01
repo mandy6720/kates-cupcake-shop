@@ -32,6 +32,9 @@ var cupcakeShop = {
   */
   bank: 0,
 
+  //List of flavors once sere, but no longer
+
+  retiredFlavors: [],
   
   /*
     shop.addFlavor: Accepts a string as a parameter, representing a cupcake flavor.
@@ -60,6 +63,7 @@ var cupcakeShop = {
   removeFlavor: function(type) {
     //check if type exists
     if (type in cupcakeShop.inventory) {
+      cupcakeShop.retiredFlavors.push(type)
       delete cupcakeShop.inventory[type];
     }
     return cupcakeShop.inventory;
@@ -148,7 +152,47 @@ var cupcakeShop = {
   */
   sellsCookies: function() {
     return false;
-  }
+  },
+
+  /*
+  shop.discountSale: it accepts a flavor parameter, but it also accepts a 
+  number value, and the price of cupcakes is temporarily multiplied by 
+  that number. (So for 50% off, the number would be .5)
+
+     If that cupcake flavor is available and there is at least 1 in the inventory,
+        then subtract one from that flavor's inventory, 
+        add the price of a cupcake (discounted) to the register,
+        and return true.
+
+      If that cupcake flavor is not available, or is out of inventory,
+        then return false.
+  */
+
+  discountSale: function(flavor, discount) {
+    // check if flavor exists
+    if (cupcakeShop.inventory[flavor] === 0) {
+      return false;
+    }
+    if (cupcakeShop.inventory[flavor] > 0) {
+      cupcakeShop.inventory[flavor] -= 1;
+      cupcakeShop.register += (3 * discount);
+      return true;
+    }
+    return false;
+  },
+
+// For number specified, adds the number to the inventory of all existing flavors.
+
+  bulkRestock: function(number) {
+    
+    _.each(cupcakeShop.inventory, function(value, key){
+      cupcakeShop.inventory[key] = value + number;
+     })
+  },
+
+  //
+
+
 
 }
 
@@ -167,3 +211,4 @@ var resetShop = function() {
   cupcakeShop.register = 0;
   cupcakeShop.bank = 0;
 }
+
